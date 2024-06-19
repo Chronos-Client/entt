@@ -225,6 +225,9 @@ private:
 } // namespace internal
 /*! @endcond */
 
+template <typename T, typename Registry, typename = void>
+struct external_assure;
+
 /**
  * @brief Fast and reliable entity-component system.
  * @tparam Entity A valid entity type.
@@ -253,6 +256,10 @@ class basic_registry {
             if(auto it = pools.find(id); it != pools.cend()) {
                 ENTT_ASSERT(it->second->type() == type_id<Type>(), "Unexpected type");
                 return static_cast<storage_type &>(*it->second);
+            }
+
+			if constexpr (traits_type::external_registry) {
+            	return external_assure<Type, basic_registry<Entity, Allocator>>::assure(this);
             }
 
             using alloc_type = typename storage_type::allocator_type;
