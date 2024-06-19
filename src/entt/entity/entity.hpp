@@ -20,12 +20,16 @@ template<typename Type>
 struct entt_traits<Type, std::enable_if_t<std::is_enum_v<Type>>>
     : entt_traits<std::underlying_type_t<Type>> {
     using value_type = Type;
+
+    static constexpr bool external_registry = false;
 };
 
 template<typename Type>
 struct entt_traits<Type, std::enable_if_t<std::is_class_v<Type>>>
     : entt_traits<typename Type::entity_type> {
     using value_type = Type;
+
+    static constexpr bool external_registry = false;
 };
 
 template<>
@@ -37,6 +41,8 @@ struct entt_traits<std::uint32_t> {
 
     static constexpr entity_type entity_mask = 0xFFFFF;
     static constexpr entity_type version_mask = 0xFFF;
+
+    static constexpr bool external_registry = false;
 };
 
 template<>
@@ -48,6 +54,8 @@ struct entt_traits<std::uint64_t> {
 
     static constexpr entity_type entity_mask = 0xFFFFFFFF;
     static constexpr entity_type version_mask = 0xFFFFFFFF;
+
+    static constexpr bool external_registry = false;
 };
 
 } // namespace internal
@@ -76,6 +84,8 @@ public:
     static constexpr entity_type entity_mask = Traits::entity_mask;
     /*! @brief Version mask size */
     static constexpr entity_type version_mask = Traits::version_mask;
+
+    static constexpr bool external_registry = Traits::external_registry;
 
     /**
      * @brief Converts an entity to its underlying type.
